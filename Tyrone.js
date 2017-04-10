@@ -74,7 +74,7 @@ function load_error(error) {
 }
 
 Tyrone.connect({
-    token: 'MzAwODczNTk0OTYyMDUxMDcz.C8yyOA.uzKHOizKOZxWjeARU0As5r-jldc'
+    token: 'INSERT YOUR TOKEN HERE'
 })
 var commands = ["define", "character", "imdb"]
 
