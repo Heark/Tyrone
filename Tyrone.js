@@ -47,10 +47,10 @@ var download = function(uri, filename, callback) {
     });
 
 };
+//////////////////////////////////////////////////////////////////////////////////
 
 
-
-// Load rivescript replies.
+// Load rivescript replies aka all files in the AI folder.
 TyroneAI.loadDirectory("AI", loading_complete, load_error);
 
 function loading_complete(batch_num) {
@@ -103,6 +103,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
 
             if (command == "define") {
                 var word = userdata;
+                // used getJSON module to access the Urban dictionary api. 
                 getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
                     var getword = c.list[0].word,
                         word = getword.charAt(0).toUpperCase() + getword.substring(1),
@@ -122,10 +123,11 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                             // access and fetch the first anime
                             r.animeography[0].fetch().then(function(r) {
                                 console.log(r.pictures[0]);
+                                // download the first picture
                                 download(r.pictures[0], '' + name + '.jpg', function() {
                                     console.log('Downloaded image of ' + name);
                                 });
-
+                            // Tyrone will try to upload the image before it is downloaded so we set it on a 5 second time out.
                                 setTimeout(function() {
                                     e.message.channel.uploadFile('' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
                                     e.message.channel.sendMessage(r.description);
@@ -146,6 +148,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                     download(things.poster, '' + moviename + '.jpg', function() {
                         console.log('Downloaded image of ' + moviename);
                     });
+                    // Again preventing upload before the image is downloaded.
                     setTimeout(function() {
                         e.message.channel.uploadFile('' + moviename + '.jpg');
                         e.message.channel.sendMessage(things.plot);
