@@ -72,7 +72,7 @@ function load_error(error) {
 }
 
 Tyrone.connect({
-    token: 'MzAwODczNTk0OTYyMDUxMDcz.C8yyOA.uzKHOizKOZxWjeARU0As5r-jldc'
+    token: 'NTER YOUR TOKEN HERE'
 })
 var commands = ["define", "character"]
 
