@@ -15,7 +15,7 @@ const Tyrone = new Discordie();
 
 
 
-// See how fast the boat is loaded.
+// See how fast Tyrone is loaded.
 var loading = new Date().getTime();
 var load_time;
 
