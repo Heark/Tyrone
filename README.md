@@ -19,7 +19,7 @@ Very simple
 ```
 npm install
 ```
-
 + Finally, run the command:
-``` node main.js
+```
+node main.js
 ```
