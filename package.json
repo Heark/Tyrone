@@ -9,7 +9,8 @@
     "maljs": "^0.2.1",
     "request": "^2.81.0",
     "rivescript": "^1.17.2",
-    "get-json": "^0.0.3"
+    "get-json": "^0.0.3",
+     "imdb-api": "^2.2.2"
   },
   "devDependencies": {},
   "scripts": {
