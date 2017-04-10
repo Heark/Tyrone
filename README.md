@@ -8,9 +8,9 @@ Auto response AI very simple to add responses.
 I'm also adding commands.
 
 # Commands
-!define - Returns the defintions of a word using the Urban Dictionary api.
-!character - Returns information about an an anime character.
-!imdb - Returns information about a TV show or a movie.
+* !define - Returns the defintions of a word using the Urban Dictionary api.
+* !character - Returns information about an an anime character. (doesn't work all the time)
+* !imdb - Returns information about a TV show or a movie.
 
 # How to build
 Very simple
