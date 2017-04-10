@@ -8,7 +8,7 @@ var getJSON = require('get-json');
 var Character = require('maljs');
 var fs = require('fs'),
     request = require('request');
-
+const imdb = require('imdb-api');
 
 const Event = Discordie.Events;
 const Tyrone = new Discordie();
@@ -36,14 +36,16 @@ function inArray(arg, value) {
     }
 }
 
-// downloads files from link and stores them
+// downloads files from link and stores them locally
 var download = function(uri, filename, callback) {
     request.head(uri, function(err, res, body) {
+        console.log('error:', err); // Print the error if one occurred 
         console.log('content-type:', res.headers['content-type']);
         console.log('content-length:', res.headers['content-length']);
 
         request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
     });
+
 };
 
 
@@ -72,9 +74,9 @@ function load_error(error) {
 }
 
 Tyrone.connect({
-    token: 'NTER YOUR TOKEN HERE'
+    token: 'MzAwODczNTk0OTYyMDUxMDcz.C8yyOA.uzKHOizKOZxWjeARU0As5r-jldc'
 })
-var commands = ["define", "character"]
+var commands = ["define", "character", "imdb"]
 
 Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
     // Get how many milliseconds have passed since the loading variable was loaded.
@@ -110,20 +112,47 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                 });
             } else if (command == "character") {
                 var name = userdata.toLowerCase();
-                Character.quickSearch(name).then(function(results) {
-                    // access and fetch the first character
-                    results.character[0].fetch().then(function(r) {
-                        // access and fetch the first anime
-                        r.animeography[0].fetch().then(function(r) {
-                            download(r.cover, 'images/' + name + '.jpg', function() {
-                                console.log('Downloaded image of ' + name);
-                            });
-                            e.channel.uploadFile('images/' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
 
-                            e.message.channel.sendMessage("test");
-                        })
+                function animeSearch() {
+
+
+                    Character.quickSearch(name).then(function(results) {
+                        // access and fetch the first character
+                        results.character[0].fetch().then(function(r) {
+                            // access and fetch the first anime
+                            r.animeography[0].fetch().then(function(r) {
+                                console.log(r.pictures[0]);
+                                download(r.pictures[0], '' + name + '.jpg', function() {
+                                    console.log('Downloaded image of ' + name);
+                                });
+
+                                setTimeout(function() {
+                                    e.message.channel.uploadFile('' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
+                                    e.message.channel.sendMessage(r.description);
+                                }, 5000);
+
+
+                            })
+                        });
                     });
+                }
+                animeSearch();
+            } else if (command == "imdb") {
+                var moviename = userdata.toLowerCase();
+                imdb.getReq({
+                    name: moviename
+                }, (err, things) => {
+                    var movie = things;
+                    download(things.poster, '' + moviename + '.jpg', function() {
+                        console.log('Downloaded image of ' + moviename);
+                    });
+                    setTimeout(function() {
+                        e.message.channel.uploadFile('' + moviename + '.jpg');
+                        e.message.channel.sendMessage(things.plot);
+                        e.message.channel.sendMessage('Rating: ' + things.rating);
+                    }, 5000);
                 });
+
             }
 
 
