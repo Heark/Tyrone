@@ -4,10 +4,16 @@ var Discordie = require('discordie');
 // The auto response AI for Tyrone
 var RiveScript = require("rivescript");
 var TyroneAI = new RiveScript();
-var getJSON = require('get-json')
+var getJSON = require('get-json');
+var Character = require('maljs');
+var fs = require('fs'),
+    request = require('request');
+
 
 const Event = Discordie.Events;
 const Tyrone = new Discordie();
+
+
 
 // See how fast the boat is loaded.
 var loading = new Date().getTime();
@@ -15,6 +21,32 @@ var load_time;
 
 // Command symbol used to detect when a command is being used.
 var Command_Symbol = "!"
+
+// Useful functions to be used.
+// capitalizes first letter in a string.
+function upcase(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function inArray(arg, value) {
+    if (arg.indexOf(value) !== -1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// downloads files from link and stores them
+var download = function(uri, filename, callback) {
+    request.head(uri, function(err, res, body) {
+        console.log('content-type:', res.headers['content-type']);
+        console.log('content-length:', res.headers['content-length']);
+
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    });
+};
+
+
 
 // Load rivescript replies.
 TyroneAI.loadDirectory("AI", loading_complete, load_error);
@@ -42,7 +74,7 @@ function load_error(error) {
 Tyrone.connect({
     token: 'MzAwODczNTk0OTYyMDUxMDcz.C8yyOA.uzKHOizKOZxWjeARU0As5r-jldc'
 })
-var commands = ["define"]
+var commands = ["define", "character"]
 
 Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
     // Get how many milliseconds have passed since the loading variable was loaded.
@@ -58,33 +90,49 @@ Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
 Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
     // Detects if the first character of the message is the command symbol
     if (e.message.content.toLowerCase().charAt(0) == Command_Symbol) {
-        // gets the user input after the command
+        // gets the user input after the command or gets all the text after the space.
         var userdata = e.message.content.substring(e.message.content.indexOf(" ") + 1);
-        // checks if the message is an actual command probably a really slow method but hey
-        for (var i = 0; i < commands.length; i++) {
-            if (e.message.content.substring(1, commands[i].length + 1) == commands[i]) {
-                var command = e.message.content.substring(1, commands[i].length + 1);
 
-                // Commands start here, must be added to the commands array as well.
+        // gets the substring in between characters in this case the text between the command symbol and the first space
+        var command = e.message.content.split(Command_Symbol).pop().split(' ').shift();
+        // checks if the message is an actual command by checking if the command string is in the commands array.
+        if (inArray(commands, command) == true) {
+            // Commands start here, must be added to the commands array as well.
 
-                if (command == "define") {
-                    var word = userdata;
-                    getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
-                        var getword = c.list[0].word,
-                            word = getword.charAt(0).toUpperCase() + getword.substring(1),
-                            definition = c.list[0].definition,
-                            out = "```" + word + ":``` " + definition;
-                        e.message.channel.sendMessage(out);
+            if (command == "define") {
+                var word = userdata;
+                getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
+                    var getword = c.list[0].word,
+                        word = getword.charAt(0).toUpperCase() + getword.substring(1),
+                        definition = c.list[0].definition,
+                        out = "```" + word + ":``` " + definition;
+                    e.message.channel.sendMessage(out);
+                });
+            } else if (command == "character") {
+                var name = userdata.toLowerCase();
+                Character.quickSearch(name).then(function(results) {
+                    // access and fetch the first character
+                    results.character[0].fetch().then(function(r) {
+                        // access and fetch the first anime
+                        r.animeography[0].fetch().then(function(r) {
+                            download(r.cover, 'images/' + name + '.jpg', function() {
+                                console.log('Downloaded image of ' + name);
+                            });
+                            e.channel.uploadFile('images/' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
+
+                            e.message.channel.sendMessage("test");
+                        })
                     });
-                }
+                });
+            }
 
 
 
 
-            } else {
-                e.message.channel.sendMessage("LMAO that command doesn't exist. Homie.")
-            };
-        }
+        } else {
+            e.message.channel.sendMessage("LMAO the command " + command + " doesn't exist homie.")
+        };
+
     }
 
 })
