@@ -4,9 +4,9 @@
   "description": "A friendly auto response bot with commands for Discord.",
   "main": "main.js",
   "dependencies": {
-    "discordie": "^0.11.0",
-    "rivescript": "^1.17.2",
-    "get-json": "^0.0.3"
+    "discordie": "*",
+    "rivescript": "*",
+    "get-json": "*"
   },
   "devDependencies": {},
   "scripts": {
