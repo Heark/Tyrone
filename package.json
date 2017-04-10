@@ -1,12 +1,15 @@
 {
   "name": "tyrone",
-  "version": "1.0.0",
-  "description": "A friendly auto response bot with commands for Discord.",
+  "version": "1.1.0",
+  "description": "A friendly auto response bot for Discord",
   "main": "main.js",
   "dependencies": {
-    "discordie": "*",
-    "rivescript": "*",
-    "get-json": "*"
+    "discordie": "^0.11.0",
+    "fs": "^0.0.1-security",
+    "maljs": "^0.2.1",
+    "request": "^2.81.0",
+    "rivescript": "^1.17.2",
+    "get-json": "^0.0.3"
   },
   "devDependencies": {},
   "scripts": {
@@ -16,10 +19,6 @@
     "type": "git",
     "url": "git+https://github.com/Heark/Tyrone.git"
   },
-  "keywords": [
-    "discord",
-    "bot"
-  ],
   "author": "Antwaun Tune",
   "license": "MIT",
   "bugs": {
