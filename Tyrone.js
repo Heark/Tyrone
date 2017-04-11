@@ -1,23 +1,36 @@
+// See how fast Tyrone is loaded.
+var loading = new Date().getTime();
+var load_time;
+
 // Load the Discordie node module
 var Discordie = require('discordie');
+
 // Load Rivescript module
 // The auto response AI for Tyrone
 var RiveScript = require("rivescript");
 var TyroneAI = new RiveScript();
+
+// Perform a GET request for a JSON api
 var getJSON = require('get-json');
+
 var Character = require('maljs');
+
+// Perform a GET request easily
 var fs = require('fs'),
     request = require('request');
+
+// Best Pokemon API for the !pokemon command.
+var Pokedex = require("pokedex-promise-v2")
+
+
+// IMDB api for the !imdb command
 const imdb = require('imdb-api');
 
+// Constants for the actual bot.
 const Event = Discordie.Events;
 const Tyrone = new Discordie();
 
 
-
-// See how fast Tyrone is loaded.
-var loading = new Date().getTime();
-var load_time;
 
 // Command symbol used to detect when a command is being used.
 var Command_Symbol = "!"
@@ -47,10 +60,10 @@ var download = function(uri, filename, callback) {
     });
 
 };
-//////////////////////////////////////////////////////////////////////////////////
 
 
-// Load rivescript replies aka all files in the AI folder.
+
+// Load rivescript replies.
 TyroneAI.loadDirectory("AI", loading_complete, load_error);
 
 function loading_complete(batch_num) {
@@ -62,8 +75,15 @@ function loading_complete(batch_num) {
         // Detect if the message contains Tyrone's name.
         if (e.message.content.toLowerCase().includes("tyrone") == true) {
             // Send message to the bot and search for a reply
-            var reply = TyroneAI.reply("local-user", e.message.content);
+
+            // if the message is just tyrone send it without removing tyrone.
+            if(e.message.content.toLowerCase() == "tyrone"){
+             var reply = TyroneAI.reply("local-user", e.message.content.toLowerCase());
+                 e.message.channel.sendMessage(reply);
+            } else {
+            var reply = TyroneAI.reply("local-user", e.message.content.toLowerCase().replace("tyrone", ""));
             e.message.channel.sendMessage(reply);
+        }
         }
     })
 
@@ -76,7 +96,7 @@ function load_error(error) {
 Tyrone.connect({
     token: 'INSERT YOUR TOKEN HERE'
 })
-var commands = ["define", "character", "imdb"]
+var commands = ["define", "character", "imdb", "pokemon"]
 
 Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
     // Get how many milliseconds have passed since the loading variable was loaded.
@@ -103,7 +123,6 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
 
             if (command == "define") {
                 var word = userdata;
-                // used getJSON module to access the Urban dictionary api. 
                 getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
                     var getword = c.list[0].word,
                         word = getword.charAt(0).toUpperCase() + getword.substring(1),
@@ -113,32 +132,26 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                 });
             } else if (command == "character") {
                 var name = userdata.toLowerCase();
-
-                function animeSearch() {
-
-
-                    Character.quickSearch(name).then(function(results) {
-                        // access and fetch the first character
-                        results.character[0].fetch().then(function(r) {
-                            // access and fetch the first anime
-                            r.animeography[0].fetch().then(function(r) {
-                                console.log(r.pictures[0]);
-                                // download the first picture
-                                download(r.pictures[0], '' + name + '.jpg', function() {
-                                    console.log('Downloaded image of ' + name);
-                                });
+                Character.quickSearch(name).then(function(results) {
+                    // access and fetch the first character
+                    results.character[0].fetch().then(function(r) {
+                        // access and fetch the first anime
+                        r.animeography[0].fetch().then(function(r) {
+                            console.log(r.pictures[0]);
+                            // download the first picture
+                            download(r.pictures[0], '' + name + '.jpg', function() {
+                                console.log('Downloaded image of ' + name);
+                            });
                             // Tyrone will try to upload the image before it is downloaded so we set it on a 5 second time out.
-                                setTimeout(function() {
-                                    e.message.channel.uploadFile('' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
-                                    e.message.channel.sendMessage(r.description);
-                                }, 5000);
+                            setTimeout(function() {
+                                e.message.channel.uploadFile('' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
+                                e.message.channel.sendMessage(r.description);
+                            }, 5000);
 
 
-                            })
-                        });
+                        })
                     });
-                }
-                animeSearch();
+                });
             } else if (command == "imdb") {
                 var moviename = userdata.toLowerCase();
                 imdb.getReq({
@@ -156,9 +169,35 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                     }, 5000);
                 });
 
+            } else if (command == "pokemon") {
+                var Pokemon = new Pokedex();
+                var pokemon_name = userdata.toLowerCase();
+                Pokemon.getPokemonByName(pokemon_name)
+                    .then(function(response) {
+                    // once Again preventing upload before the image is downloaded.
+                    download(response.sprites.front_default, '' + pokemon_name + '.png', function() {
+                        console.log('Downloaded image of ' + pokemon_name);
+                    });
+                        var POKEMONDATA = response
+                        setTimeout(function() {
+                        e.message.channel.uploadFile('' + pokemon_name + '.png');
+                        e.message.channel.sendMessage(upcase(pokemon_name));
+                        console.log("Getting information on "+pokemon_name);
+                        e.message.channel.sendMessage('Base Stats: ');
+                        e.message.channel.sendMessage(upcase(POKEMONDATA.stats[0].stat.name)+': '+POKEMONDATA.stats[0].base_stat);
+                        e.message.channel.sendMessage(upcase(POKEMONDATA.stats[1].stat.name)+': '+POKEMONDATA.stats[1].base_stat);
+                        e.message.channel.sendMessage(upcase(POKEMONDATA.stats[2].stat.name)+': '+POKEMONDATA.stats[2].base_stat);
+                        e.message.channel.sendMessage(upcase(POKEMONDATA.stats[3].stat.name)+': '+POKEMONDATA.stats[3].base_stat);
+                        e.message.channel.sendMessage(upcase(POKEMONDATA.stats[4].stat.name)+': '+POKEMONDATA.stats[4].base_stat);
+                        e.message.channel.sendMessage(upcase(POKEMONDATA.stats[5].stat.name)+': '+POKEMONDATA.stats[5].base_stat);
+                    }, 5000);
+                    
+                    })
+                    .catch(function(error) {
+                        e.message.channel.sendMessage('LMFAOOOOOOOOOO There ain\'t no pokemon called '+pokemon_name+'.');
+                    });
+
             }
-
-
 
 
         } else {
