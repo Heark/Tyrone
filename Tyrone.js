@@ -134,9 +134,6 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
             // Commands start here, must be added to the commands array as well.
 
             if (command == "define") {
-                if (userdata == "" || undefined || "!define") {
-                    e.message.channel.sendMessage("Bruh you have to say what you want to define.");
-                } else {
                     var word = userdata;
                     getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
                         var getword = c.list[0].word,
@@ -145,11 +142,8 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                             out = "```" + word + ":``` " + definition;
                         e.message.channel.sendMessage(out);
                     });
-                }
+                
             } else if (command == "character") {
-                if (userdata == "" || undefined || "!character") {
-                    e.message.channel.sendMessage("Bruh you have to say who you want to look up.");
-                } else {
                     var name = userdata.toLowerCase();
                     Character.quickSearch(name).then(function(results) {
                         // access and fetch the first character
@@ -171,11 +165,8 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                             })
                         });
                     });
-                }
+                
             } else if (command == "imdb") {
-                if (userdata == "" || undefined || "!imdb") {
-                    e.message.channel.sendMessage("Bruh you have to say what you want to look up.");
-                } else {
                     var moviename = userdata.toLowerCase();
                     imdb.getReq({
                         name: moviename
@@ -191,14 +182,9 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                             e.message.channel.sendMessage('Rating: ' + things.rating);
                         }, 5000);
                     });
-                }
+                
 
             } else if (command == "pokemon") {
-                if (userdata == "" || undefined || "!pokemon") {
-                    e.message.channel.sendMessage("Bruh you have to say what you want to look up.");
-                } else {
-
-
                     var Pokemon = new Pokedex();
                     var pokemon_name = userdata.toLowerCase();
                     Pokemon.getPokemonByName(pokemon_name)
@@ -225,27 +211,27 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                         .catch(function(error) {
                             e.message.channel.sendMessage('LMFAOOOOOOOOOO There ain\'t no pokemon called ' + pokemon_name + '.');
                         });
-                }
             } else if (command == "spotify") {
 
-                if (userdata == "!spotify") {
-                    e.message.channel.sendMessage("Ok... so what you want me to do.");
-                } else {
-                    var Spotify = new SpotifyWebApi();
+            if(userdata == "!spotify"){
+                e.message.channel.sendMessage("Ok... so what you want me to do.");
+            } else {
+                var Spotify = new SpotifyWebApi();
 
-                    var sub_command = userdata.toLowerCase().replace(userdata_2, "").replace(" ", "");
-                    if (sub_command == "playlistsearch") {
-                        var playlist = userdata_2.toLowerCase();
-                        Spotify.searchPlaylists(playlist)
-                            .then(function(data) {
-                                e.message.channel.sendMessage('Yo I Found this playlists:');
-                                e.message.channel.sendMessage(data.body.playlists.items[Math.floor(Math.random() * 20) + 0].external_urls.spotify);
-                            }, function(err) {
-                                e.message.channel.sendMessage('Damn, I got nothing');
-                            });
-                    }
+                var sub_command = userdata.toLowerCase().replace(userdata_2, "").replace(" ", "");
+                if (sub_command == "playlistsearch") {
+                    var playlist = userdata_2.toLowerCase();
+                    Spotify.searchPlaylists(playlist)
+                        .then(function(data) {
+                            e.message.channel.sendMessage('Yo I Found this playlists:');
+                            e.message.channel.sendMessage(data.body.playlists.items[Math.floor(Math.random() * 20) + 0  
+].external_urls.spotify);
+                        }, function(err) {
+                            e.message.channel.sendMessage('Damn, I got nothing');
+                        });
                 }
             }
+        }
 
         } else {
             e.message.channel.sendMessage("LMAO the command " + command + " doesn't exist homie.")
