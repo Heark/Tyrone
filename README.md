@@ -11,6 +11,7 @@ I'm also adding commands.
 * !define - Returns the defintions of a word using the Urban Dictionary api.
 * !character - Returns information about an an anime character. (doesn't work all the time)
 * !imdb - Returns information about a TV show or a movie.
+* !pokemon - returns information about a Pokemon
 
 # How to build
 Very simple
