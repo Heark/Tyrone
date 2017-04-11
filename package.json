@@ -6,13 +6,13 @@
   "dependencies": {
     "discordie": "^0.11.0",
     "fs": "^0.0.1-security",
+    "get-json": "0.0.3",
+    "imdb-api": "^2.2.2",
     "maljs": "^0.2.1",
+    "pokedex-promise-v2": "^3.0.3",
     "request": "^2.81.0",
     "rivescript": "^1.17.2",
-    "get-json": "^0.0.3",
-     "imdb-api": "^2.2.2",
-     "pokedex-promise-v2": "*",
-      "spotify-web-api-node": "*"
+    "spotify-web-api-node": "^2.3.6"
   },
   "devDependencies": {},
   "scripts": {
