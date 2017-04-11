@@ -12,6 +12,7 @@ I'm also adding commands.
 * !character - Returns information about an an anime character. (doesn't work all the time)
 * !imdb - Returns information about a TV show or a movie.
 * !pokemon - returns information about a Pokemon
+* !spotify playlistsearch - allows you to search for a spotify playlist by a keyword.
 
 # How to build
 Very simple
