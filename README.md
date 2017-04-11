@@ -13,6 +13,9 @@ I'm also adding commands.
 * !imdb - Returns information about a TV show or a movie.
 * !pokemon - returns information about a Pokemon
 * !spotify playlistsearch - allows you to search for a spotify playlist by a keyword.
+* !spotify song - allows you to search for a spotify song by a keyword.
+* !spotify user - allows you to get information for a spotify user.
+
 
 # How to build
 Very simple
