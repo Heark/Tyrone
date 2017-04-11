@@ -25,5 +25,5 @@ npm install
 ```
 + Finally, run the command:
 ```
-node main.js
+node Tyrone.js
 ```
