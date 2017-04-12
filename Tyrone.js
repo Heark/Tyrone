@@ -106,7 +106,7 @@ function load_error(error) {
 Tyrone.connect({
     token: 'INSERT YOUR TOKEN HERE'
 });
-var commands = ["define", "character", "imdb", "pokemon", "spotify", "nba"];
+var commands = ["define", "character", "imdb", "pokemon", "spotify", "lol", "realfriends"];
 
 Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
     // Get how many milliseconds have passed since the loading variable was loaded.
@@ -167,7 +167,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                             setTimeout(function() {
                                 e.message.channel.uploadFile('' + name + '.jpg', null, " " + upcase(name) + " is a character from the anime: " + r.title, true);
                                 e.message.channel.sendMessage(r.description);
-                            }, 5000);
+                            }, 2000);
 
 
                         });
@@ -187,7 +187,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                         e.message.channel.uploadFile('' + moviename + '.jpg');
                         e.message.channel.sendMessage(things.plot);
                         e.message.channel.sendMessage('Rating: ' + things.rating);
-                    }, 5000);
+                    }, 2000);
                 });
 
 
@@ -212,7 +212,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                             e.message.channel.sendMessage(upcase(POKEMONDATA.stats[3].stat.name) + ': ' + POKEMONDATA.stats[3].base_stat);
                             e.message.channel.sendMessage(upcase(POKEMONDATA.stats[4].stat.name) + ': ' + POKEMONDATA.stats[4].base_stat);
                             e.message.channel.sendMessage(upcase(POKEMONDATA.stats[5].stat.name) + ': ' + POKEMONDATA.stats[5].base_stat);
-                        }, 5000);
+                        }, 2000);
 
                     })
                     .catch(function(error) {
@@ -267,8 +267,55 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
 
                     }
                 }
-            }
+            } else if (command == "lol") {
+                var username = userdata.toLowerCase();
+                getJSON("https://na.api.riotgames.com/api/lol/NA/v1.4/summoner/by-name/" + username + "?api_key=RGAPI-b45dbac3-7ee5-4d75-92a3-9b3c7431fc68", function(error, c) {
+                    // Converting the JSON to a string so we can change the username to the string "USERNAME" so we can access the object.
+                    var regJSON = JSON.stringify(c)
+                    var LOL_JSON = JSON.parse(regJSON.replace(username, 'USERNAME'));
+                    var userID = LOL_JSON.USERNAME.id;
+                    download("http://avatar.leagueoflegends.com/na/" + username + ".png", username + '-lol.png', function() {
+                        console.log('Downloaded image of ' + username + ' from League of Legends');
+                    });
+                    //
+                    setTimeout(function() {
+                        e.message.channel.uploadFile(username + '-lol.png');
+                        e.message.channel.sendMessage(LOL_JSON.USERNAME.name);
+                        e.message.channel.sendMessage('Summoner Level: ' + LOL_JSON.USERNAME.summonerLevel);
+                        getJSON("https://na.api.riotgames.com/api/lol/NA/v1.3/game/by-summoner/" + userID + "/recent?api_key=RGAPI-b45dbac3-7ee5-4d75-92a3-9b3c7431fc68", function(error, g) {
+                            function win_or_lose() {
+                                var WIN_OR_LOSE_BOOL = g.games[0].stats.win;
+                                if (WIN_OR_LOSE_BOOL == true) {
+                                    return "Win";
+                                } else {
+                                    return "Loss";
+                                }
+                            }
 
+                            function getKDA() {
+                                var kills = g.games[0].stats.championsKilled;
+                                var deaths = g.games[0].stats.numDeaths;
+                                var assists = g.games[0].stats.assists;
+
+                                if (kills == null || undefined) {
+                                    kills = 0;
+                                }
+                                if (deaths == null || undefined) {
+                                    deaths = 0;
+                                }
+                                if (assists == null || undefined) {
+                                    assists = 0;
+                                }
+                                return kills + '/' + deaths + '/' + assists;
+                            }
+                            e.message.channel.sendMessage("Recent Game:");
+                            e.message.channel.sendMessage("Game Mode: " + upcase(g.games[0].gameMode.toLowerCase()).replace('_', " ") + " Result: " + win_or_lose() + " KDA: " + getKDA());
+                        });
+                    }, 2000);
+                });
+
+
+            } else if (command == "!realfriends") {}
         } else {
             e.message.channel.sendMessage("LMAO the command " + command + " doesn't exist homie.");
         }
