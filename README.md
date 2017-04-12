@@ -15,6 +15,7 @@ I'm also adding commands.
 * !spotify playlistsearch - allows you to search for a spotify playlist by a keyword.
 * !spotify song - allows you to search for a spotify song by a keyword.
 * !spotify user - allows you to get information for a spotify user.
+* !lol - returns summoner information from league of legends
 
 
 # How to build
