@@ -4,9 +4,9 @@ Add him to your server [HERE](https://discordapp.com/oauth2/authorize?&client_id
 
 
 # Features
-Auto response AI very simple to add responses.
-Zombiez game, every 15 minutes a zombie appears and someone must type !shoot to accumulate points.
-I'm also adding commands.
+* Auto response AI very simple to add responses.
+* Zombiez game, every 15 minutes a zombie appears and someone must type !shoot to accumulate points.
+* I'm also adding commands.
 
 # Commands
 * !define - Returns the defintions of a word using the Urban Dictionary api.
