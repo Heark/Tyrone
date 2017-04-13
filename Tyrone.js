@@ -3,24 +3,24 @@ var loading = new Date().getTime();
 var load_time;
 
 // Load the Discordie node module
-var Discordie = require('discordie');
+const Discordie = require('discordie');
 
 // Load Rivescript module
 // The auto response AI for Tyrone
-var RiveScript = require("rivescript");
-var TyroneAI = new RiveScript();
+const RiveScript = require("rivescript");
+const TyroneAI = new RiveScript();
 
 // Perform a GET request for a JSON api
-var getJSON = require('get-json');
+const getJSON = require('get-json');
 
-var Character = require('maljs');
+const Character = require('maljs');
 
 // Perform a GET request easily
-var fs = require('fs'),
+const fs = require('fs'),
     request = require('request');
 
 // Best Pokemon API for the !pokemon command.
-var Pokedex = require("pokedex-promise-v2");
+const Pokedex = require("pokedex-promise-v2");
 
 
 // IMDB api for the !imdb command
@@ -33,9 +33,11 @@ const Event = Discordie.Events;
 const Tyrone = new Discordie();
 
 // Spotify API
-var SpotifyWebApi = require('spotify-web-api-node');
+const SpotifyWebApi = require('spotify-web-api-node');
 
-
+// Variables for the Zombiez game.
+var zombie_shot = false;
+var Zombiez_on = false;
 
 
 // Command symbol used to detect when a command is being used.
@@ -73,6 +75,20 @@ function format(num) {
 
 }
 
+// Checks if a file exists and returns true or false
+function FileExists(FileName) {
+    fs.stat(FileName, function(err, stat) {
+        if (err == null) {
+            return true;
+        } else if (err.code == 'ENOENT') {
+            return false;
+        } else {
+            throw Error("Error: " + err.code);
+        }
+    });
+}
+
+
 // Load rivescript replies.
 TyroneAI.loadDirectory("AI", loading_complete, load_error);
 
@@ -106,7 +122,7 @@ function load_error(error) {
 Tyrone.connect({
     token: 'INSERT YOUR TOKEN HERE'
 });
-var commands = ["define", "character", "imdb", "pokemon", "spotify", "lol"];
+var commands = ["define", "character", "imdb", "pokemon", "spotify", "lol", "zombiezscore", "shoot"];
 
 Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
     // Get how many milliseconds have passed since the loading variable was loaded.
@@ -116,10 +132,70 @@ Tyrone.Dispatcher.on(Event.GATEWAY_READY, e => {
     // Print to the console when the bot has been loaded.
     console.log('Bot Online! Connected in ' + load_time + ' seconds.');
 
+
 });
+
+
 
 // Event listener for when a new message is created.
 Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
+    // ZOMBIEZ GAME \\
+    function playZombiez() {
+        if (Zombiez_on == true) {
+
+        } else {
+            Zombiez_on = true;
+            var points = Math.floor(Math.random() * 1000) + 100;
+            POINTS = points;
+            e.message.channel.sendMessage("A ZOMBIE SHOWED UP SHOOT HIM FOR " + points + " ZOMBIE POINTS");
+            e.message.channel.sendMessage("Use !shoot to shoot the zombie");
+            setTimeout(function() {
+                if (zombie_shot == false) {
+                    e.message.channel.sendMessage("No one shot the Zombie, we gonna die.");
+                } else {
+
+                }
+            }, 15000)
+        }
+    }
+
+    setInterval(function() {
+        playZombiez()
+    }, 900000)
+
+
+    // get zombiez scores
+    function getZombiezScores(username) {
+        fs.readFile("zombiez-scores/" + username + ".txt", "utf8", function(error, data) {
+            return parseInt(data);
+        });
+    }
+
+    function newPlayerUpdate(username, score) {
+        fs.writeFile("zombiez-scores/" + username + ".txt", score, function(err) {
+            if (err) {
+                return console.log("Error writing file: " + err);
+            }
+        })
+    }
+
+    function newScore(username, score) {
+        var new_score = getZombiezScores(username) + score;
+        // erase the current score and write the new score
+        fs.truncate("zombiez-scores/" + username + ".txt", 0, function() {
+            fs.writeFile("zombiez-scores/" + username + ".txt", new_score, function(err) {
+                if (err) {
+                    return console.log("Error writing file: " + err);
+                }
+            });
+        });
+
+
+    }
+
+
+    // END OF ZOMBIEZ GAME \\
+
     // Detects if the first character of the message is the command symbol
     if (e.message.content.toLowerCase().charAt(0) == Command_Symbol) {
         // gets the user input after the command or gets all the text after the first space.
@@ -330,7 +406,29 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                 });
 
 
-            } else if (command == "!realfriends") {}
+            } else if (command == "zombiezscore") {
+                if (FileExists("zombiez-scores/" + e.message.author.username + ".txt") == true) {
+                    e.message.channel.sendMessage("Yoooo your Zombiez scoe is: " + getZombiezScores(e.message.author.username))
+
+                } else {
+                    e.message.channel.sendMessage("Bro you haven't shot any zombies.")
+                }
+
+            } else if (command == "shoot") {
+
+                if (Zombiez_on == true) {
+                    Zombiez_on = false;
+                    zombie_shot = true;
+                    if (FileExists("zombiez-scores/" + e.message.author.username + ".txt") == true) {
+                        newScore(e.message.author.username, POINTS);
+                    } else {
+                        newPlayerUpdate(e.message.author.username, POINTS);
+                    }
+                    e.message.channel.sendMessage(e.message.author.username + " shot the zombie and got " + POINTS + " points!")
+                } else {
+                    e.message.channel.sendMessage("There is no zombie fool.");
+                }
+            }
         } else {
             e.message.channel.sendMessage("LMAO the command " + command + " doesn't exist homie.");
         }
