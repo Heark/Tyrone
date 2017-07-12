@@ -33,5 +33,5 @@ npm install
 ```
 + Finally, run the command:
 ```
-node Tyrone.js
+pm2 start Tyrone.js
 ```
