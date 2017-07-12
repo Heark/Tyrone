@@ -87,12 +87,6 @@ function FileExists(FileName) {
         }
     });
 }
-gulp.task('start', function () {
-  nodemon({
-    script: 'Tyrone.js'
-  , env: { 'NODE_ENV': 'development' }
-  })
-})
 
 // Load rivescript replies.
 TyroneAI.loadDirectory("AI", loading_complete, load_error);
