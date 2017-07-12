@@ -430,7 +430,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                 }
             }
         } else if (command == "gifit") {
-            giphy.search(userdata.toLowerCasse(), function(err, res) {
+            giphy.search(userdata.toLowerCase(), function(err, res) {
                 e.message.channel.sendMessage(res.data[Math.floor(Math.random() * 25) + 0].bitly_gif_url);
             });
         } else {
