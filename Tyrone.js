@@ -220,16 +220,17 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
             if (command == "define") {
                 var word = userdata;
                 getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
-                        if (error) {
-                            e.message.channel.sendMessage("What?")
-                        } else {
-                            var getword = c.list[0].word,
-                                word = getword.charAt(0).toUpperCase() + getword.substring(1),
-                                definition = c.list[0].definition,
-                                out = "```" + word + ":``` " + definition;
-                            e.message.channel.sendMessage(out);
-                        });
-                }
+                    if (error) {
+                        e.message.channel.sendMessage("What?")
+                    } else {
+                        var getword = c.list[0].word,
+                            word = getword.charAt(0).toUpperCase() + getword.substring(1),
+                            definition = c.list[0].definition,
+                            out = "```" + word + ":``` " + definition;
+                        e.message.channel.sendMessage(out);
+
+                    }
+                });
             } else if (command == "character") {
                 var name = userdata.toLowerCase();
                 Character.quickSearch(name).then(function(results) {
