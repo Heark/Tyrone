@@ -196,7 +196,7 @@
 - <set name=<formal>><get name>, lit nice to meet you.
 
 + my name is <bot master>
-- <set name=<bot master>>That's my master's name too.
+- <set name=<bot master>>oh shit thats whats up.
 
 + my name is <bot name>
 - <set name=<bot name>>Yea but i'm OG Tyrone.
@@ -206,7 +206,7 @@
 - <set name=<formal>><get name>, I will call you that from now on.
 
 + i am * years old
-- <set age=<star>>A lot of people are <get age>, you're not alone.
+- <set age=<star>>who asked?
 - <set age=<star>>lit, I'm <bot age> myself.{weight=49}
 
 + i am a (@malenoun)
@@ -400,8 +400,8 @@
 - How likely, would you estimate?
 
 + (hello|hi|hey|howdy|hola|hai|yo) [*]
-- How do you do. Please state your problem.
-- Hi. What seems to be your problem?
+- ayo whats good my dude?
+- It's ya boy.
 
 + [*] computer [*]
 - Do computers worry you?
