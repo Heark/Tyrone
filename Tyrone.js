@@ -346,7 +346,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
             } else if (command == "lol") {
                 var cancel_100 = false;
                 var username = userdata.toLowerCase();
-                getJSON("https://na.api.riotgames.com/api/lol/NA/v1.4/summoner/by-name/" + username + "?api_key=RGAPI-b45dbac3-7ee5-4d75-92a3-9b3c7431fc68", function(error, c) {
+                getJSON("https://na.api.riotgames.com/api/lol/NA/v1.4/summoner/by-name/" + username + "?api_key=RGAPI-d625e97e-127c-4108-883e-404a4d72a6c2", function(error, c) {
                     // Converting the JSON to a string so we can change the username to the string "USERNAME" so we can access the object.
                     var regJSON = JSON.stringify(c)
                     var LOL_JSON = JSON.parse(regJSON.replace(username, 'USERNAME'));
@@ -420,7 +420,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                     Zombiez_on = false;
                     zombie_shot = true;
                     if (FileExists("zombiez-scores/" + e.message.author.username + ".txt") == true) {
-                        newScore(e.message.author.username, POINTS);
+                        newScore(e.message.author.username, getZombiezScores(e.message.author.username + POINTS));
                     } else {
                         newPlayerUpdate(e.message.author.username, POINTS);
                     }
