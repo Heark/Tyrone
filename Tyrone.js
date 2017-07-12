@@ -26,7 +26,7 @@ const Pokedex = require("pokedex-promise-v2");
 // IMDB api for the !imdb command
 const imdb = require('imdb-api');
 
-
+const giphy = require("giphy-api")('d21718ba018c4af3b4f74f747759a39d')
 
 // Constants for the actual bot.
 const Event = Discordie.Events;
@@ -429,6 +429,10 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                     e.message.channel.sendMessage("There is no zombie fool.");
                 }
             }
+        } else if (command == "gifit") {
+            giphy.search(userdata.toLowerCasse(), function(err, res) {
+                e.message.channel.sendMessage(res.data[Math.floor(Math.random() * 25) + 0].bitly_gif_url);
+            });
         } else {
             e.message.channel.sendMessage("LMAO the command " + command + " doesn't exist homie.");
         }
