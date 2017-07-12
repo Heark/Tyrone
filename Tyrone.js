@@ -221,7 +221,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
                 var word = userdata;
                 getJSON("http://api.urbandictionary.com/v0/define?term=" + word, function(error, c) {
                     if (error) {
-                        e.message.channel.sendMessage("What?")
+                        throw (error);
                     } else {
                         var getword = c.list[0].word,
                             word = getword.charAt(0).toUpperCase() + getword.substring(1),
@@ -436,7 +436,7 @@ Tyrone.Dispatcher.on(Event.MESSAGE_CREATE, e => {
         } else if (command == "gifit") {
             giphy.search(userdata.toLowerCase(), function(err, res) {
                 if (err) {
-                    e.message.channel.sendMessage("What?")
+                    throw(err);
                 } else {
                     e.message.channel.sendMessage(res.data[Math.floor(Math.random() * 24) + 0].bitly_gif_url);
                 }
